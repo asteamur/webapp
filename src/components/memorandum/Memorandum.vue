@@ -1,31 +1,46 @@
 <template>
   <div>
-    <em>{{date}}</em>
+    <em class="text-success">{{date}}</em>
+    <em class="author text-info">{{author}}</em>
     <div v-if="!edit" class=marco>
       <div class="text">
         {{text}}
       </div>  
-      <b-button class="over" variant="success" @click="setEdit()">Editar</b-button>
+      <b-button v-if="isAuthor"
+        class="over" variant="success" @click="setEdit()">Editar</b-button>
     </div>
     <div v-if="edit" class="marco">
-      <b-form-textarea        
+      <b-form-textarea    
+        autofocus
+        @input="change"    
         rows="6"
         max-rows="6"
         v-model="text"
       >  
       </b-form-textarea>      
-      <b-button class="bsave" variant="success" @click="save()">Guardar</b-button>
+      <b-button class="bsave" variant="success" @click="save(true)">Guardar</b-button>
     </div>
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs'
+import { Subject } from 'rxjs'
+import { debounceTime } from 'rxjs/operators'
 
 export default {
   name: 'Memorandum',
   props: {
     _id: String
+  },
+  created(){
+    this.source = new Subject()
+    this.source.pipe(
+    debounceTime(2000),
+    ).subscribe(() => this.save(false))
+  },
+  destroyed(){
+    this.source.unsubscribe()
   },
   data(){
     return {
@@ -33,11 +48,15 @@ export default {
     }
   },
   methods:{
+    change(value){
+      this.source.next(value)
+    },
     setEdit(){
       this.$store.commit('memorandum/setEdit', this._id)
     },
-    save(){
-      this.$store.commit('memorandum/setEdit', null)
+    save(end){
+      //const text = this.text
+      this.$store.dispatch('memorandum/updateMemorandum', end)//{_id: this._id, text})
     }
   },
   computed: {
@@ -49,6 +68,9 @@ export default {
     },
     author(){
       return this.item.author
+    },
+    isAuthor(){
+      return this.author === this.$store.state.userId
     },
     date(){
       return dayjs.unix(this.item.date).format('DD/MM/YYYY')
@@ -66,6 +88,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+.author{
+  float: right;
+}
 
 .marco {
   position: relative;

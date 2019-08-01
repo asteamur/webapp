@@ -7,5 +7,14 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
     memorandum
+  },
+  state: {
+    toast: '',
+    userId: 'miguel'
+  },
+  mutations: {
+    setToast(state, msg){
+      state.toast = msg
+    }
   }
 })

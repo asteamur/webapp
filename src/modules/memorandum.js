@@ -1,3 +1,5 @@
+let counter = 100
+
 const memorandumModule = {
     
     namespaced: true,
@@ -22,7 +24,7 @@ const memorandumModule = {
     },
     getters: {
         memorandums(state){
-            return state.itemList.map(x => state.items[x])
+            return state.itemList.map(x => state.items[x]).sort((a, b) => b.date - a.date)
         }
     },
     mutations: {
@@ -38,11 +40,11 @@ const memorandumModule = {
         updateNewItem(state, item){
             state.new = item
         },
-        insertItem(state, item){
+        newItem(state, item){
             state.items = {...state.items, [item._id]: item}
             state.itemList.push(item._id)
         },
-        insertItems(state, items){
+        newItems(state, items){
             state.items = items
         },
         updateItem(state, item){
@@ -50,8 +52,20 @@ const memorandumModule = {
         }
     },
     actions: {
+        newItem({ commit }, item){
+            item._id = '' + counter
+            counter += 1
+            commit('newItem', item)
+            commit('setEdit', item._id)
+        },
         searchMemorandums(ctx, {dateInit, dateEnd}){
             console.log(dateInit, dateEnd)
+        },
+        updateMemorandum({ commit }, end){
+            commit('setToast', {text: 'Datos guardados con éxito', variant: 'success'}, {root: true})
+            if(end){
+                commit('setEdit', null)
+            }
         }
     }
 }

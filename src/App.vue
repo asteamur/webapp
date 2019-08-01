@@ -8,6 +8,27 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: 'App',
+  computed: {
+    toast(){
+      return this.$store.state.toast
+    }
+  },
+  watch:{
+    toast(newVal){
+      this.$bvToast.toast(newVal.text, {
+          title: 'Notificación',
+          autoHideDelay: 3000,
+          variant: newVal.variant,
+          solid: true
+      })
+    }
+  }
+}
+</script>
+
 <style lang="scss">
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
