@@ -65,6 +65,14 @@ export default {
       this.$router.push({query: {dateInit, dateEnd}})
     }
   },
+  created(){
+    const {dateInit, dateEnd} = this.$route.query
+    if(dateInit === undefined || dateEnd === undefined){
+      this.last7days()
+    }else{
+      this.$store.dispatch('memorandum/searchMemorandums', {dateInit, dateEnd})
+    }
+  },
   watch: {
     '$route'(to){
       const {dateInit, dateEnd} = to.query

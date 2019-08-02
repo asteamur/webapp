@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 let counter = 100
 
 const memorandumModule = {
@@ -59,7 +61,11 @@ const memorandumModule = {
             commit('setEdit', item._id)
         },
         searchMemorandums(ctx, {dateInit, dateEnd}){
-            console.log(dateInit, dateEnd)
+            if(dayjs(dateInit).isValid() && dayjs(dateEnd).isValid()){
+                console.log('search', dateInit, dateEnd)
+            }else{
+                console.log('dates invalid', dateInit, dateEnd)
+            }
         },
         updateMemorandum({ commit }, end){
             commit('setToast', {text: 'Datos guardados con éxito', variant: 'success'}, {root: true})
