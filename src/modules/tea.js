@@ -1,3 +1,5 @@
+import { updateModel } from 'vuex-bound'
+
 const teaModule = {
     
     namespaced: true,
@@ -20,7 +22,9 @@ const teaModule = {
         },
         itemList: ['0', '1'],
         itemSelected: null,
-        datasheet: {}
+        datasheet: {
+            email: 'hola@hola.es'
+        }
     },
     getters: {
         teas(state){
@@ -34,6 +38,7 @@ const teaModule = {
         }
     },
     mutations: {
+        ...updateModel(),
         reset(state){
             state.items = {}
             state.itemList = []

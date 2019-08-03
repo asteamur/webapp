@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Tea from './views/Tea.vue'
+import Datasheet from './views/Datasheet.vue'
 
 Vue.use(Router)
 
@@ -18,6 +19,11 @@ export default new Router({
       path: '/tea',
       name: 'tea',
       component: Tea
+    },
+    {
+      path: '/datasheet/:_id?',
+      name: 'datasheet',
+      component: Datasheet,
     },
     {
       path: '/about',
