@@ -9,7 +9,7 @@
       <b-col sm="4">
         <h1>Acciones</h1>
         <hr>  
-        <ActionList type_="tea" />    
+        <ActionList :selected="selected" type_="tea" />    
       </b-col>
     </b-row>
   </b-container>
@@ -33,6 +33,9 @@ export default {
   computed: {
     teas(){
       return this.$store.getters['tea/teas']
+    },
+    selected(){
+      return this.$store.getters['tea/selected']
     }
   },
   methods: {

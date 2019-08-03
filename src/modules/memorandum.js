@@ -31,6 +31,7 @@ const memorandumModule = {
     },
     mutations: {
         reset(state){
+            console.log('reseting...')
             state.edit = null
             state.items = {}
             state.itemList = []

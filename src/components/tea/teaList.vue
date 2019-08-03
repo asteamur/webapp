@@ -33,8 +33,8 @@ export default {
   },
   methods:{
     setSelected(_id){
-        console.log(_id)
-        this.$store.commit('tea/setSelected', _id)
+        this.$store.dispatch('tea/setSelected', _id)
+        //this.$store.commit('tea/setSelected', _id)
     },
     selected(_id){
         return this.$store.getters['tea/selected'] == _id

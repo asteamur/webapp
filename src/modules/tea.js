@@ -19,7 +19,8 @@ const teaModule = {
             }
         },
         itemList: ['0', '1'],
-        itemSelected: '0'
+        itemSelected: null,
+        datasheet: {}
     },
     getters: {
         teas(state){
@@ -37,6 +38,10 @@ const teaModule = {
             state.items = {}
             state.itemList = []
             state.itemSelected = null
+            state.datasheet = {}
+        },
+        resetDatasheet(state){
+            state.datasheet = {}
         },
         setSelected(state, _id){
             state.itemSelected = _id
@@ -46,14 +51,22 @@ const teaModule = {
             state.itemList.push(item._id)
         },
         newItems(state, items){
-            state.items = items
+            state.items = items.reduce((obj, v)=>{
+                obj[v._id] = v
+                return obj
+            },{})
+            state.itemList = items.map(x => x._id)
         },
         updateItem(state, item){
             state.items = {...state.items, [item._id]: {...state.items[item._id], ...item}}
         }
     },
     actions: {        
-        
+        setSelected({commit}, _id){
+            commit('resetDatasheet')
+            commit('memorandum/reset', null, {root: true})
+            commit('setSelected', _id)
+        }
     }
 }
 

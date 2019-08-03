@@ -5,6 +5,7 @@
                 href="#" class="flex-column align-items-start" 
                 v-for="item in items" :key="item._id"
                  @click="actionSelected(item)"
+                 :disabled="item.dependsOnSelected && !selected"
                 >
                 <Action :item="item" />
             </b-list-group-item>
@@ -21,7 +22,7 @@ export default {
   components:{
       Action
   },
-  props: ['type_'],
+  props: ['type_', 'selected'],
   data(){
     return {
 
@@ -34,11 +35,22 @@ export default {
   },
   methods:{
     actionSelected(item){
-        let params = {}
-        if(this.type_ === 'tea'){
-            params = {_id: this.$store.state.userId}
+        if(item.dependsOnSelected && !this.selected){
+            return
         }
-        this.$router.push({name: item.action.name, params})
+        if(item.params === false){
+            this.$router.push({name: item.action.name})    
+        }else{
+            let params = {}
+            let query = {}
+            if(item.dependsOnSelected){
+                params = {_id: this.selected}
+            }
+            if(item.query){
+                query = {...item.query()}
+            }
+            this.$router.push({name: item.action.name, params, query})    
+        }
     }
   }
 }

@@ -13,7 +13,7 @@ export default new Vuex.Store({
   state: {
     toast: '',
     userId: 'miguel',
-    rol: 'terapeuta'
+    rol: 'coordinador:jefe'
   },
   mutations: {
     setToast(state, msg){
