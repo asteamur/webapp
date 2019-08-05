@@ -1,5 +1,13 @@
 <template>
   <div>
+      <div>
+          Padre: {{father.name}}          
+      </div>
+      <b-button variant="outline-primary" @click="unlink('father')">Desvincular</b-button>
+      <div>
+          Madre: {{mother.name}}          
+      </div>    
+      <b-button variant="outline-primary" @click="unlink('mother')">Desvincular</b-button>
     <b-form @submit="onSubmit" novalidate>
       <b-form-group
         id="input-group-email"
@@ -8,9 +16,6 @@
         :invalid-feedback="errors.first('email')"
         :state="!errors.has('email')"
       >
-      <!--:invalid-feedback="error('email').msg"
-        :state="!error('email').hasgot"
-        -->
         <b-form-input
           v-validate="'required|email'"
           id="input-email"
@@ -34,15 +39,25 @@
       :disabled="errors.items.length > 0">
       Guardar
       </b-button>      
+      <b-button style="float: right;"
+        variant="outline-success" 
+        :disabled="errors.has('email')"
+        @click="sendPassword()">
+        Enviar email
+      </b-button>
     </b-form>
   </div>
 </template>
 
 <script>
 import { mapModel } from 'vuex-bound'
+//import Parent from '@/components/parent/Parent.vue'
 
 export default {
   name: 'DatasheetForm',  
+  components: {
+      //Parent
+  },
   created(){
       if(this.$route.params._id){
           console.log('dispatch fetch datasheet')
@@ -50,27 +65,41 @@ export default {
   },
   data(){
     return {
-      email2: ''
+
     }
   },
   methods:{
+    sendPassword(){
+        console.log('send password')
+    },
+    unlink(type){
+        if(type === 'father'){
+            this.father = {}
+        }else{
+            this.mother = {}
+        }
+        //this.$store.dispatch('tea/updateParent', {type, value: {} })
+    },
     onSubmit(evt) {
         evt.preventDefault()
-        this.$emit('input', {...this.$store.state.tea.datasheet})
-    },
-    error2(name){        
-        const v = this.$store.state.tea.datasheet[name]
-        return {
-            msg: 'Introduce un email válido',
-            hasgot: !v || v !== 'miguel.alarcos@gmail.com'
-        }
+        console.log({...this.datasheet, 
+                        father: this.datasheet.father._id,
+                        mother: this.datasheet.mother._id
+                        })
+        //this.$store.dispatch
+        //this.$emit('input', {...this.$store.state.tea.datasheet})
     }
   },
   computed: {
+    datasheet(){
+        return this.$store.state.tea.datasheet
+    },  
     ...mapModel('tea', {
         _id: state => state.datasheet._id,
         name: state => state.datasheet.name,
-        email: state => state.datasheet.email
+        email: state => state.datasheet.email,
+        father: state => state.datasheet.father,
+        mother: state => state.datasheet.mother
     })
   },
   watch: {

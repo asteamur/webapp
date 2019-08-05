@@ -23,7 +23,15 @@ const teaModule = {
         itemList: ['0', '1'],
         itemSelected: null,
         datasheet: {
-            email: 'hola@hola.es'
+            email: 'hola@hola.es',
+            father: {
+                name: 'diego',
+                _id: 'xxx'
+            },
+            mother: {
+                name: 'paquita',
+                _id: 'yyy'
+            }
         }
     },
     getters: {
@@ -39,6 +47,12 @@ const teaModule = {
     },
     mutations: {
         ...updateModel(),
+        updateFather(state, value){
+            state.datasheet.father = value
+        },
+        updateMother(state, value){
+            state.datasheet.mother = value
+        },
         reset(state){
             state.items = {}
             state.itemList = []
@@ -67,6 +81,13 @@ const teaModule = {
         }
     },
     actions: {        
+        updateParent({commit}, {type, value}){
+            if(type === 'father'){
+                commit('updateFather', value)
+            }else{
+                commit('updateMother', value)
+            }
+        },
         setSelected({commit}, _id){
             commit('resetDatasheet')
             commit('memorandum/reset', null, {root: true})
