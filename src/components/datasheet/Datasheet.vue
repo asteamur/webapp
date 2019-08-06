@@ -92,7 +92,7 @@
       </b-button>
     </b-form>
     <!-- -->
-
+    <LoginForm />
     <!--  -->
     </div>
 </template>
@@ -100,11 +100,13 @@
 <script>
 import { mapModel } from 'vuex-bound'
 import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
+import LoginForm from '@/components/login/Login.vue'
 
 export default {
   name: 'DatasheetForm',  
   components: {
-      VueBootstrapTypeahead
+      VueBootstrapTypeahead,
+      LoginForm
   },
   created(){
       if(this.$route.params._id){
