@@ -56,7 +56,7 @@
         <!--          autocomplete="email"-->
       </b-form-group>
 
-<!-- -->
+<!-- 
       <b-form-group
         id="input-group-password"
         label="password:"
@@ -68,15 +68,15 @@
           name="password"
           placeholder="Introduce tu password"
         ></b-form-input>
-        <!--autocomplete="password"-->
       </b-form-group>
+      -->
 
 <!-- -->
-      <b-form-group id="input-group-name" label="Your Name:" label-for="input-name">
+      <b-form-group id="input-group-name" label="Nombre:" label-for="input-name">
         <b-form-input
           id="input-name"
           v-model="name"
-          placeholder="Enter name"
+          placeholder="Introduce el nombre de usuario"
         ></b-form-input>
       </b-form-group>
 
@@ -109,6 +109,7 @@ export default {
       LoginForm
   },
   created(){
+      this.$store.commit('tea/resetDatasheet')
       if(this.$route.params._id){
           console.log('dispatch fetch datasheet')
       }
@@ -144,11 +145,10 @@ export default {
     },
     onSubmit(evt) {
         evt.preventDefault()
-        console.log({...this.datasheet, 
+        this.$store.dispatch('tea/postTEA', {...this.datasheet, 
                         father: this.datasheet.father._id,
                         mother: this.datasheet.mother._id
                         })
-        //this.$store.dispatch
         //this.$emit('input', {...this.$store.state.tea.datasheet})
     }
   },

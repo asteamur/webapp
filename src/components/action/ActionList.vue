@@ -30,7 +30,7 @@ export default {
   },
   computed:{
       items(){
-          return actions[this.type_].filter( (x) => x.roles.includes(this.$store.state.rol))
+          return actions[this.type_].filter( (x) => x.roles.includes(this.$store.state.role))
       }
   },
   methods:{

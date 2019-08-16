@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { updateModel } from 'vuex-bound'
 
 const teaModule = {
@@ -5,32 +6,16 @@ const teaModule = {
     namespaced: true,
     state: {
         items: {
-            '0': {
-                _id: '0',
-                name: 'Miguel Ángel Alarcos Torrecillas',
-                age: 8,
-                head: 'Cartagena',
-                center: 'CEIP Jacinto Benavente'
-            },
-            '1': {
-                _id: '1',
-                name: 'Verónica Alarcos Torrecillas',
-                age: 12,
-                head: 'Murcia',
-                center: 'CEIP Nuestra Señora de la Salud'
-            }
+            
         },
-        itemList: ['0', '1'],
+        itemList: [],
         itemSelected: null,
         datasheet: {
-            email: 'hola@hola.es',
+            email: null,
+            name: null,
             father: {
-                name: 'diego',
-                _id: 'xxx'
             },
             mother: {
-                name: 'paquita',
-                _id: 'yyy'
             }
         }
     },
@@ -63,7 +48,10 @@ const teaModule = {
             }
         },
         resetDatasheet(state){
-            state.datasheet = {}
+            state.datasheet = {
+                father: {},
+                mother: {}
+            }
         },
         setSelected(state, _id){
             state.itemSelected = _id
@@ -83,7 +71,21 @@ const teaModule = {
             state.items = {...state.items, [item._id]: {...state.items[item._id], ...item}}
         }
     },
-    actions: {        
+    actions: {   
+        async postTEA({commit, rootState}, datasheet){
+            console.log(datasheet, rootState.JWT)
+            try{
+                const response = await axios.post('/api/private/tea', datasheet, {headers:  
+                    {Authorization: "Bearer " + rootState.JWT}})
+                console.log(response.data._id)    
+                commit('newItem', {...datasheet, _id: response.data._id})
+                commit('setToast', {text: 'Datos guardados con éxito', variant: 'success'}, {root: true})
+            }catch(err){
+                //commit('setToast', {text: 'error 500', variant: 'error'}, {root: true})
+                console.log(err.response.data)
+                commit('setToast', {text: err.response.data.error, variant: 'error'}, {root: true})
+            }
+        },     
         updateParent({commit}, {type, value}){
             if(type === 'father'){
                 commit('updateFather', value)

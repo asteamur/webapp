@@ -13,7 +13,8 @@ export default new Vuex.Store({
   state: {
     toast: '',
     userId: 'miguel',
-    rol: 'coordinador:jefe'
+    role: 'admin',
+    JWT: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJtaWd1ZWwiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE1NjU5NjIxNTV9.x5ypbkOrBEgNno2dvpMQPwzwSW3wr7Q1y9k9W7lq4D0'
   },
   mutations: {
     setToast(state, msg){
