@@ -57,7 +57,10 @@ const teaModule = {
             state.items = {}
             state.itemList = []
             state.itemSelected = null
-            state.datasheet = {}
+            state.datasheet = {
+                father: {},
+                mother: {}
+            }
         },
         resetDatasheet(state){
             state.datasheet = {}
