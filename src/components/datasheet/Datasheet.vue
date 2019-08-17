@@ -13,7 +13,7 @@
           <tr><td>Nombre:</td><td>{{father.name}}</td></tr> 
           <tr><td>Teléfono:</td><td>{{father.phone}}</td></tr>
           <tr><td></td><td>
-            <b-button style="float: right;" variant="outline-primary" @click="unlink('father')">Desvincular</b-button>          
+            <b-button v-if="father.name" style="float: right;" variant="outline-primary" @click="unlink('father')">Desvincular</b-button>          
           </td></tr>
           </table>
       </div>
@@ -31,7 +31,7 @@
           <tr><td>Nombre:</td><td>{{mother.name}}</td></tr> 
           <tr><td>Teléfono:</td><td>{{mother.phone}}</td></tr>
           <tr><td></td><td>
-            <b-button style="float: right;" variant="outline-primary" @click="unlink('mother')">Desvincular</b-button>          
+            <b-button v-if="mother.name" style="float: right;" variant="outline-primary" @click="unlink('mother')">Desvincular</b-button>          
           </td></tr>
           </table> 
       </div>        
@@ -80,6 +80,15 @@
         ></b-form-input>
       </b-form-group>
 
+      <b-form-group id="input-group-birth" label="Fecha de nacimiento:" label-for="input-birth">
+        <datepicker :initialView="'year'" v-model="dateOfBirth"></datepicker>
+        <!--<b-form-input
+          id="input-birth"
+          v-model="name"
+          placeholder="Introduce el nombre de usuario"
+        ></b-form-input>-->
+      </b-form-group>
+
       <b-button type="submit" variant="primary" 
       :disabled="errors.items.length > 0">
       Guardar
@@ -101,12 +110,14 @@
 import { mapModel } from 'vuex-bound'
 import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
 import LoginForm from '@/components/login/Login.vue'
+import Datepicker from 'vuejs-datepicker'
 
 export default {
   name: 'DatasheetForm',  
   components: {
       VueBootstrapTypeahead,
-      LoginForm
+      LoginForm,
+      Datepicker
   },
   created(){
       this.$store.commit('tea/resetDatasheet')
@@ -160,6 +171,7 @@ export default {
         _id: state => state.datasheet._id,
         name: state => state.datasheet.name,
         email: state => state.datasheet.email,
+        dateOfBirth: state => state.datasheet.dateOfBirth,
         father: state => state.datasheet.father,
         mother: state => state.datasheet.mother
     })
