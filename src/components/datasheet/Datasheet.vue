@@ -8,7 +8,7 @@
                 :serializer="s => s.name"
                 @hit="father = $event"
             />
-          <h3>Padre:</h3>
+          <h3>Padre</h3>
           <table>
           <tr><td>Nombre:</td><td>{{father.name}}</td></tr> 
           <tr><td>Teléfono:</td><td>{{father.phone}}</td></tr>
@@ -26,7 +26,7 @@
                 :serializer="s => s.name"
                 @hit="mother = $event"
             />
-          <h3>Madre:</h3>
+          <h3>Madre</h3>
           <table>
           <tr><td>Nombre:</td><td>{{mother.name}}</td></tr> 
           <tr><td>Teléfono:</td><td>{{mother.phone}}</td></tr>
@@ -45,7 +45,7 @@
         :state="!errors.has('email')"
       >
         <b-form-input
-          v-validate="'required|email'"
+          v-validate="'email'"
           id="input-email"
           v-model="email"
           type="text"
@@ -56,24 +56,16 @@
         <!--          autocomplete="email"-->
       </b-form-group>
 
-<!-- 
       <b-form-group
-        id="input-group-password"
-        label="password:"
-        label-for="input-password"
-      >
-        <b-form-input
-          id="input-password"
-          type="password"
-          name="password"
-          placeholder="Introduce tu password"
-        ></b-form-input>
-      </b-form-group>
-      -->
-
-<!-- -->
-      <b-form-group id="input-group-name" label="Nombre:" label-for="input-name">
-        <b-form-input
+        :invalid-feedback="errors.first('name')"
+        :state="!errors.has('name')" 
+        id="input-group-name" 
+        label="Nombre:" 
+        label-for="input-name">
+        <b-form-input 
+          v-validate.initial="'required'"
+          name="name"
+          :state="!errors.has('name')"
           id="input-name"
           v-model="name"
           placeholder="Introduce el nombre de usuario"
@@ -82,11 +74,6 @@
 
       <b-form-group id="input-group-birth" label="Fecha de nacimiento:" label-for="input-birth">
         <datepicker :initialView="'year'" v-model="dateOfBirth"></datepicker>
-        <!--<b-form-input
-          id="input-birth"
-          v-model="name"
-          placeholder="Introduce el nombre de usuario"
-        ></b-form-input>-->
       </b-form-group>
 
       <b-button type="submit" variant="primary" 
@@ -100,23 +87,23 @@
         Enviar email
       </b-button>
     </b-form>
-    <!-- -->
+    <!-- 
     <LoginForm />
-    <!--  -->
+     -->
     </div>
 </template>
 
 <script>
 import { mapModel } from 'vuex-bound'
 import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
-import LoginForm from '@/components/login/Login.vue'
+//import LoginForm from '@/components/login/Login.vue'
 import Datepicker from 'vuejs-datepicker'
 
 export default {
   name: 'DatasheetForm',  
   components: {
       VueBootstrapTypeahead,
-      LoginForm,
+      //LoginForm,
       Datepicker
   },
   created(){
@@ -166,7 +153,7 @@ export default {
   computed: {
     datasheet(){
         return this.$store.state.tea.datasheet
-    },  
+    },
     ...mapModel('tea', {
         _id: state => state.datasheet._id,
         name: state => state.datasheet.name,

@@ -5,6 +5,12 @@ import router from './router'
 import store from './store'
 import VeeValidate from 'vee-validate';
 import es from 'vee-validate/dist/locale/es'
+import axios from 'axios'
+import qs from 'qs'
+
+axios.defaults.paramsSerializer = function (params) {
+  return qs.stringify(params, {arrayFormat: 'comma'})
+}
 
 Vue.use(VeeValidate, {
   locale: 'es',

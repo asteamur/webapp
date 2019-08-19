@@ -1,5 +1,8 @@
 <template>
   <b-container>
+    <b-row align-h="center">
+      <search-box @input="changeQueryName"></search-box>
+    </b-row>
     <b-row align-h="center">      
       <b-col sm="4">
         <h1>Usuarios</h1>
@@ -18,12 +21,14 @@
 <script>
 import teaList from '@/components/tea/teaList.vue'
 import ActionList from '@/components/action/ActionList.vue'
+import SearchBox from '@/components/lib/SearchBox.vue'
 
 export default {
   name: 'home',
   components: {
     teaList,
-    ActionList
+    ActionList,
+    SearchBox
   },
   data(){
     return {
@@ -39,13 +44,18 @@ export default {
     }
   },
   methods: {
-    
+    changeQueryName(q){
+      this.$router.replace({query: {name: q}})
+    }
   },
   created(){
-    
+    this.$store.dispatch('tea/fetch', this.$route.query)
   },
   watch: {
-    
+    '$route'(to){
+      const query = to.query
+      this.$store.dispatch('tea/fetch', query)
+    }
   }
 }
 </script>

@@ -11,8 +11,9 @@ const teaModule = {
         itemList: [],
         itemSelected: null,
         datasheet: {
-            email: null,
-            name: null,
+            email: '',
+            name: '',
+            dateOfBirth: null,
             father: {
             },
             mother: {
@@ -43,12 +44,18 @@ const teaModule = {
             state.itemList = []
             state.itemSelected = null
             state.datasheet = {
+                name: '',
+                email: '',
+                dateOfBirth: null,
                 father: {},
                 mother: {}
             }
         },
         resetDatasheet(state){
             state.datasheet = {
+                name: '',
+                email: '',
+                dateOfBirth: null,
                 father: {},
                 mother: {}
             }
@@ -72,8 +79,19 @@ const teaModule = {
         }
     },
     actions: {   
+        async fetch({commit, rootState}, query){
+            try{
+                const response = await axios.get('/api/private/tea', {
+                    headers: { Authorization: "Bearer " + rootState.JWT },
+                    params: {fields: ['name', 'dateOfBirth', 'center'], ...query}
+                })
+                commit('newItems', response.data)
+            }catch(err){
+                console.log(err.response.data)
+                commit('setToast', {text: err.response.data.error.message, variant: 'error'}, {root: true})
+            }
+        },
         async postTEA({commit, rootState}, datasheet){
-            console.log(datasheet, rootState.JWT)
             try{
                 const response = await axios.post('/api/private/tea', datasheet, {headers:  
                     {Authorization: "Bearer " + rootState.JWT}})
@@ -82,7 +100,7 @@ const teaModule = {
                 commit('setToast', {text: 'Datos guardados con éxito', variant: 'success'}, {root: true})
             }catch(err){
                 //commit('setToast', {text: 'error 500', variant: 'error'}, {root: true})
-                console.log(err.response.data)
+                console.log(err)
                 commit('setToast', {text: err.response.data.error, variant: 'error'}, {root: true})
             }
         },     
