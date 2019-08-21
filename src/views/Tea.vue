@@ -24,7 +24,6 @@ import ActionList from '@/components/action/ActionList.vue'
 import SearchBox from '@/components/lib/SearchBox.vue'
 
 export default {
-  name: 'home',
   components: {
     teaList,
     ActionList,

@@ -55,8 +55,10 @@ export default {
       this.$store.commit('memorandum/setEdit', this._id)
     },
     save(end){
-      //const text = this.text
-      this.$store.dispatch('memorandum/updateMemorandum', end)//{_id: this._id, text})
+      const text = this.text
+      this.$store.dispatch('memorandum/patch', {_id: this._id,
+                                                memorandum: {text}, 
+                                                end})
     }
   },
   computed: {
@@ -67,13 +69,13 @@ export default {
       return this.$store.state.memorandum.items[this._id]
     },
     author(){
-      return this.item.author
+      return this.item.updatedBy || this.item.createdBy
     },
     isAuthor(){
       return this.author === this.$store.state.userId
     },
     date(){
-      return dayjs.unix(this.item.date).format('DD/MM/YYYY')
+      return dayjs(this.item.updatedAt || this.item.createdAt).format('DD/MM/YYYY')
     },
     text: {
       get(){

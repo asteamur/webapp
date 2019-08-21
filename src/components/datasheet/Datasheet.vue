@@ -108,8 +108,9 @@ export default {
   },
   created(){
       this.$store.commit('tea/resetDatasheet')
-      if(this.$route.params._id){
-          console.log('dispatch fetch datasheet')
+      const _id = this.$route.params._id
+      if(_id){
+        this.$store.dispatch('tea/fetchOne', _id)
       }
   },
   data(){
@@ -143,11 +144,19 @@ export default {
     },
     onSubmit(evt) {
         evt.preventDefault()
-        this.$store.dispatch('tea/postTEA', {...this.datasheet, 
+        if(!this._id){
+          this.$store.dispatch('tea/post', {...this.datasheet, 
                         father: this.datasheet.father._id,
                         mother: this.datasheet.mother._id
                         })
-        //this.$emit('input', {...this.$store.state.tea.datasheet})
+        }else{
+          const { _id, ...datasheet } = this.datasheet
+          this.$store.dispatch('tea/patch', {_id,
+                        datasheet: {...datasheet, 
+                            father: datasheet.father._id,
+                            mother: datasheet.mother._id
+                        }})
+        }
     }
   },
   computed: {

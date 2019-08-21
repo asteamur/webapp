@@ -21,6 +21,7 @@ const teaModule = {
         }
     },
     getters: {
+        teaById: state => _id => state.items[_id],
         teas(state){
             return state.itemList.map(x => state.items[x])
         },
@@ -73,12 +74,31 @@ const teaModule = {
                 return obj
             },{})
             state.itemList = items.map(x => x._id)
+            state.itemSelected = null
         },
         updateItem(state, item){
             state.items = {...state.items, [item._id]: {...state.items[item._id], ...item}}
+        },
+        updateDatasheet(state, datasheet){
+            datasheet.father = undefined
+            datasheet.mother = undefined
+            state.datasheet = datasheet
         }
     },
     actions: {   
+        async fetchOne({commit, rootState}, _id){
+            try{
+                const response = await axios.get('/api/private/tea/' + _id, {
+                    headers: { Authorization: "Bearer " + rootState.JWT },
+                    params: {fields: ['name', 'dateOfBirth', 'center']}
+                })
+                commit('updateDatasheet', response.data)
+                commit('newItems', [response.data])
+            }catch(err){
+                console.log(err.response.data)
+                commit('setToast', {text: err.response.data.error, variant: 'error'}, {root: true})
+            }
+        },
         async fetch({commit, rootState}, query){
             try{
                 const response = await axios.get('/api/private/tea', {
@@ -88,10 +108,10 @@ const teaModule = {
                 commit('newItems', response.data)
             }catch(err){
                 console.log(err.response.data)
-                commit('setToast', {text: err.response.data.error.message, variant: 'error'}, {root: true})
+                commit('setToast', {text: err.response.data.error, variant: 'error'}, {root: true})
             }
         },
-        async postTEA({commit, rootState}, datasheet){
+        async post({commit, rootState}, datasheet){
             try{
                 const response = await axios.post('/api/private/tea', datasheet, {headers:  
                     {Authorization: "Bearer " + rootState.JWT}})
@@ -100,6 +120,16 @@ const teaModule = {
                 commit('setToast', {text: 'Datos guardados con éxito', variant: 'success'}, {root: true})
             }catch(err){
                 //commit('setToast', {text: 'error 500', variant: 'error'}, {root: true})
+                console.log(err)
+                commit('setToast', {text: err.response.data.error, variant: 'error'}, {root: true})
+            }
+        },
+        async patch({commit, rootState}, {_id, datasheet}){
+            try{
+                await axios.patch('/api/private/tea/' + _id, datasheet, {headers:  
+                    {Authorization: "Bearer " + rootState.JWT}})
+                commit('setToast', {text: 'Datos actualizados con éxito', variant: 'success'}, {root: true})
+            }catch(err){
                 console.log(err)
                 commit('setToast', {text: err.response.data.error, variant: 'error'}, {root: true})
             }

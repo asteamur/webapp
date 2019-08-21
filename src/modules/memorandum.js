@@ -1,4 +1,4 @@
-import dayjs from 'dayjs'
+import axios from 'axios'
 
 let counter = 100
 
@@ -8,20 +8,9 @@ const memorandumModule = {
     state: {
         edit: null,
         items: {
-            '0': {
-                _id: '0',
-                text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                author: 'miguel',
-                date: 1318781876
-            },
-            '1': {
-                _id: '1',
-                text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                author: 'toy',
-                date: 1318781876
-            }
+            
         },
-        itemList: ['0', '1'],
+        itemList: [],
         new: {}
     },
     getters: {
@@ -48,7 +37,11 @@ const memorandumModule = {
             state.itemList.push(item._id)
         },
         newItems(state, items){
-            state.items = items
+            state.items = items.reduce((obj, v)=>{
+                obj[v._id] = v
+                return obj
+            },{})
+            state.itemList = items.map(x => x._id)
         },
         updateItem(state, item){
             state.items = {...state.items, [item._id]: {...state.items[item._id], ...item}}
@@ -61,17 +54,49 @@ const memorandumModule = {
             commit('newItem', item)
             commit('setEdit', item._id)
         },
-        searchMemorandums(ctx, {dateInit, dateEnd}){
-            if(dayjs(dateInit).isValid() && dayjs(dateEnd).isValid()){
-                console.log('search', dateInit, dateEnd)
-            }else{
-                console.log('dates invalid', dateInit, dateEnd)
+        async fetch({commit, rootState}, query){
+            try{
+                const response = await axios.get('/api/private/memorandum', {
+                    headers: { Authorization: "Bearer " + rootState.JWT },
+                    params: {fields: ['text', 'createdBy', 'updatedBy', 'createdAt'], ...query}
+                })
+                commit('newItems', response.data)
+            }catch(err){
+                console.log(err.response.data)
+                commit('setToast', {text: err.response.data.error, variant: 'error'}, {root: true})
             }
         },
         updateMemorandum({ commit }, end){
             commit('setToast', {text: 'Datos guardados con éxito', variant: 'success'}, {root: true})
             if(end){
                 commit('setEdit', null)
+            }
+        },
+        async post({commit, rootState}, payload){
+            try{
+                const response = await axios.post('/api/private/memorandum', payload, {headers:  
+                    {Authorization: "Bearer " + rootState.JWT}})
+                commit('newItem', {...payload, ...response.data})
+                commit('setEdit', response.data._id)
+                commit('setToast', {text: 'Datos guardados con éxito', variant: 'success'}, {root: true})
+            }catch(err){
+                //commit('setToast', {text: 'error 500', variant: 'error'}, {root: true})
+                console.log(err)
+                commit('setToast', {text: err.response.data.error, variant: 'error'}, {root: true})
+            }
+        },
+        async patch({commit, rootState}, {_id, memorandum, end}){
+            try{
+                const response = await axios.patch('/api/private/memorandum/' + _id, memorandum, {headers:  
+                    {Authorization: "Bearer " + rootState.JWT}})
+                commit('updateItem', response.data)
+                if(end){
+                    commit('setEdit', null)
+                }
+                commit('setToast', {text: 'Datos actualizados con éxito', variant: 'success'}, {root: true})
+            }catch(err){
+                console.log(err)
+                commit('setToast', {text: err.response.data.error, variant: 'error'}, {root: true})
             }
         }
     }

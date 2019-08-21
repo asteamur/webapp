@@ -1,4 +1,4 @@
-import dayjs from 'dayjs'
+//import dayjs from 'dayjs'
 
 export default {
     'tea': [
@@ -23,8 +23,10 @@ export default {
             action: {name: 'home'},
             roles: ['admin', 'terapeuta', 'coordinador:jefe'],
             query: () => {return {
-                dateInit: dayjs().add(-7, 'day').format('YYYY-MM-DD'), 
-                dateEnd: dayjs().format('YYYY-MM-DD')}
+                since: 7,
+                //dateInit: dayjs().add(-7, 'day').format('YYYY-MM-DD'), 
+                //dateEnd: dayjs().format('YYYY-MM-DD')
+                }
             },
             dependsOnSelected: true
         }

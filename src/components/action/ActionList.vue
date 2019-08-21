@@ -38,7 +38,7 @@ export default {
         if(item.dependsOnSelected && !this.selected){
             return
         }
-        if(item.params === false){
+        if(item.params === false){ //probar a quitarla
             this.$router.push({name: item.action.name})    
         }else{
             let params = {}

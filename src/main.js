@@ -7,6 +7,7 @@ import VeeValidate from 'vee-validate';
 import es from 'vee-validate/dist/locale/es'
 import axios from 'axios'
 import qs from 'qs'
+import './filters'
 
 axios.defaults.paramsSerializer = function (params) {
   return qs.stringify(params, {arrayFormat: 'comma'})

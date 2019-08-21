@@ -3,8 +3,8 @@
     <b-row align-h="center">      
       <b-col sm="8">
         <h1>Memorandum</h1>
-        <em class="mt-3" style="float: right;">8 años</em>
-        <h2>Miguel Ángel Alarcos Torrecillas</h2>        
+        <em class="mt-3" style="float: right;">{{dateOfBirth | age}}</em>
+        <h2>{{name}}</h2>        
         <b-button variant="outline-primary" @click="last7days()">Últimos 7 días</b-button>
         <b-button class="ml-2" variant="outline-primary" @click="lastmonth()">Último mes</b-button>
         <b-button style="float: right;" variant="outline-success" @click="newMemorandum">Nuevo</b-button>
@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import dayjs from 'dayjs'
 import Memorandum from '@/components/memorandum/Memorandum.vue'
 import MSearch from '@/components/memorandum/Search.vue'
 
@@ -38,45 +37,59 @@ export default {
       dateEnd: null
     }
   },
+  filters: {
+    
+  },
   computed: {
+    dateOfBirth(){
+      return this.tea && (this.tea.dateOfBirth || '')
+    },
+    name(){
+      return this.tea && (this.tea.name || '')
+    },
+    tea(){
+      return this.$store.getters['tea/teaById'](this.$route.params._id)
+    },
     memorandums(){
       return this.$store.getters['memorandum/memorandums']
     }
   },
   methods: {
     newMemorandum(){
-      this.$store.dispatch('memorandum/newItem', {author: 'miguel', text: '', date: dayjs().unix()})
+      this.$store.dispatch('memorandum/post', {tea_id: this.$route.params._id, text: ''})
     },
     last7days(){
-      const dateInit = dayjs().add(-7, 'day')
-      const dateEnd = dayjs()
-      this.$router.push({query: {dateInit: dateInit.format('YYYY-MM-DD'), 
-                                 dateEnd: dateEnd.format('YYYY-MM-DD')
-                                 }})
+      this.$router.push({query: {since: 7}})
+      //const dateInit = dayjs().add(-7, 'day')
+      //const dateEnd = dayjs()
+      //this.$router.push({query: {dateInit: dateInit.format('YYYY-MM-DD'), 
+                                 //dateEnd: dateEnd.format('YYYY-MM-DD')
+                                 //}})
     },  
     lastmonth(){
-      const dateInit = dayjs().add(-1, 'month')
+      this.$router.push({query: {since: 30}})
+      /*const dateInit = dayjs().add(-1, 'month')
       const dateEnd = dayjs()
       this.$router.push({query: {dateInit: dateInit.format('YYYY-MM-DD'), 
                                  dateEnd: dateEnd.format('YYYY-MM-DD')
-                                 }})
+                                 }})*/
     },  
     searchChange({dateInit, dateEnd}){
       this.$router.push({query: {dateInit, dateEnd}})
     }
   },
   created(){
-    const {dateInit, dateEnd} = this.$route.query
-    if(dateInit === undefined || dateEnd === undefined){
-      this.last7days()
-    }else{
-      this.$store.dispatch('memorandum/searchMemorandums', {dateInit, dateEnd})
+    this.$store.dispatch('tea/fetchOne', this.$route.params._id)
+    let { since, dateInit, dateEnd } = this.$route.query
+    if(dateInit === undefined && dateEnd === undefined){
+      since = since || 7
     }
+    this.$store.dispatch('memorandum/fetch', {tea_id: this.$route.params._id, 
+                                              since, dateInit, dateEnd})
   },
   watch: {
     '$route'(to){
-      const {dateInit, dateEnd} = to.query
-      this.$store.dispatch('memorandum/searchMemorandums', {dateInit, dateEnd})
+      this.$store.dispatch('memorandum/fetch', to.query)
     }
   }
 }

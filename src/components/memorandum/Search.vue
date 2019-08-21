@@ -1,19 +1,13 @@
 <template>
 <div>
     <b-row>
-        <b-col md="2">
-            <span>Fecha inicio</span>
+        <b-col>  
+            <datepicker v-model="dateInit" placeholder="fecha inicio"></datepicker>
         </b-col>
-        <b-col md="3">  
-            <b-form-input type="date" v-model="dateInit"></b-form-input>
+        <b-col>
+            <datepicker v-model="dateEnd" placeholder="fecha fin"></datepicker>
         </b-col>
-        <b-col md="2">
-            <span>Fecha fin</span>
-        </b-col>
-        <b-col md="3">
-            <b-form-input type="date" v-model="dateEnd"></b-form-input>          
-        </b-col>
-        <b-col md="2">
+        <b-col>
             <b-button variant="outline-primary" @click="search">Buscar</b-button>
         </b-col>
     </b-row>
@@ -21,8 +15,13 @@
 </template>
 
 <script>
+import Datepicker from 'vuejs-datepicker'
+
 export default {
   name: 'MemorandumSearch',
+  components:{
+    Datepicker
+  },
   data(){
     return {
       dateInit: null,
