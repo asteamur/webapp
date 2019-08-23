@@ -1,13 +1,13 @@
 <template>
   <div>
-      <div>
-           <vue-bootstrap-typeahead
+      <vue-bootstrap-typeahead
                 :data="parents"
                 placeholder="buscar padre"
                 v-model="query"
                 :serializer="s => s.name"
                 @hit="father = $event"
-            />
+      />
+      <div v-if="father">
           <h3>Padre</h3>
           <table>
           <tr><td>Nombre:</td><td>{{father.name}}</td></tr> 
@@ -17,15 +17,14 @@
           </td></tr>
           </table>
       </div>
-      
-      <div>
-          <vue-bootstrap-typeahead
+      <vue-bootstrap-typeahead
                 :data="parents"
                 placeholder="buscar madre"
                 v-model="query"
                 :serializer="s => s.name"
                 @hit="mother = $event"
-            />
+      />
+      <div v-if="mother">
           <h3>Madre</h3>
           <table>
           <tr><td>Nombre:</td><td>{{mother.name}}</td></tr> 
@@ -146,15 +145,15 @@ export default {
         evt.preventDefault()
         if(!this._id){
           this.$store.dispatch('tea/post', {...this.datasheet, 
-                        father: this.datasheet.father._id,
-                        mother: this.datasheet.mother._id
+                        //father: this.datasheet.father._id,
+                        //mother: this.datasheet.mother._id
                         })
         }else{
           const { _id, ...datasheet } = this.datasheet
           this.$store.dispatch('tea/patch', {_id,
                         datasheet: {...datasheet, 
-                            father: datasheet.father._id,
-                            mother: datasheet.mother._id
+                            //father: datasheet.father._id,
+                            //mother: datasheet.mother._id
                         }})
         }
     }

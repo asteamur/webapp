@@ -90,7 +90,7 @@ const teaModule = {
             try{
                 const response = await axios.get('/api/private/tea/' + _id, {
                     headers: { Authorization: "Bearer " + rootState.JWT },
-                    params: {fields: ['name', 'dateOfBirth', 'center']}
+                    params: {fields: ['name', 'dateOfBirth', 'center', 'email']}
                 })
                 commit('updateDatasheet', response.data)
                 commit('newItems', [response.data])
